@@ -151,7 +151,7 @@ export function DebtForm({ initialDebt, onSubmit, onCancel }: DebtFormProps) {
           }
         />
         <MoneyField
-          label="Còn lại"
+          label="Dư nợ hiện tại"
           value={values.currentBalance}
           onChange={(currentBalance) => setValues((current) => ({ ...current, currentBalance }))}
         />
@@ -264,18 +264,37 @@ interface NumberFieldProps {
 }
 
 function NumberField({ label, value, onChange, min = 0, max, step = '1', suffix }: NumberFieldProps) {
+  const [displayValue, setDisplayValue] = useState(value > 0 ? String(value) : '');
+
+  useEffect(() => {
+    setDisplayValue(value > 0 ? String(value) : '');
+  }, [value]);
+
+  function handleChange(rawValue: string) {
+    const nextValue = rawValue.replace(',', '.').replace(/[^\d.]/g, '');
+    const dotIndex = nextValue.indexOf('.');
+    const normalizedValue =
+      dotIndex >= 0
+        ? `${nextValue.slice(0, dotIndex + 1)}${nextValue.slice(dotIndex + 1).replace(/\./g, '')}`
+        : nextValue;
+    const numericValue = Number(normalizedValue);
+
+    setDisplayValue(normalizedValue);
+    onChange(Number.isFinite(numericValue) ? numericValue : 0);
+  }
+
   return (
     <label>
       <span className="mb-1 block text-sm font-semibold text-ink">{label}</span>
       <span className="flex items-center rounded-md border border-ink/15 bg-white px-3 focus-within:border-mint focus-within:ring-2 focus-within:ring-mint/20">
         <input
-          type="number"
+          type="text"
           inputMode="decimal"
-          value={Number.isNaN(value) ? '' : value}
-          min={min}
-          max={max}
-          step={step}
-          onChange={(event) => onChange(Number(event.target.value))}
+          value={displayValue}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          data-step={step}
+          onChange={(event) => handleChange(event.target.value)}
           className="h-12 min-w-0 flex-1 bg-transparent text-base font-semibold text-ink outline-none"
         />
         {suffix ? <span className="ml-1 text-sm font-semibold text-ink/50">{suffix}</span> : null}
@@ -285,17 +304,28 @@ function NumberField({ label, value, onChange, min = 0, max, step = '1', suffix 
 }
 
 function MoneyField({ label, value, onChange }: Omit<NumberFieldProps, 'suffix' | 'step'>) {
+  const [displayValue, setDisplayValue] = useState(value > 0 ? String(Math.round(value)) : '');
+
+  useEffect(() => {
+    setDisplayValue(value > 0 ? String(Math.round(value)) : '');
+  }, [value]);
+
+  function handleChange(rawValue: string) {
+    const digitsOnly = rawValue.replace(/[^\d]/g, '');
+    setDisplayValue(digitsOnly);
+    onChange(digitsOnly ? Number(digitsOnly) : 0);
+  }
+
   return (
     <label>
       <span className="mb-1 block text-sm font-semibold text-ink">{label}</span>
       <span className="flex items-center rounded-md border border-ink/15 bg-white px-3 focus-within:border-mint focus-within:ring-2 focus-within:ring-mint/20">
         <input
-          type="number"
+          type="text"
           inputMode="numeric"
-          value={Number.isNaN(value) ? '' : value}
-          min={0}
-          step="10000"
-          onChange={(event) => onChange(Number(event.target.value))}
+          value={displayValue}
+          placeholder="0"
+          onChange={(event) => handleChange(event.target.value)}
           className="h-12 min-w-0 flex-1 bg-transparent text-base font-semibold text-ink outline-none"
         />
         <span className="ml-1 text-sm font-semibold text-ink/50">₫</span>

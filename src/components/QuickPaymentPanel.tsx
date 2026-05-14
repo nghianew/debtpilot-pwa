@@ -76,12 +76,13 @@ export function QuickPaymentPanel({ debts, onAddPayment }: QuickPaymentPanelProp
             <span className="mb-1 block text-sm font-semibold text-ink">Số tiền</span>
             <span className="flex items-center rounded-md border border-ink/15 bg-white px-3 focus-within:border-mint focus-within:ring-2 focus-within:ring-mint/20">
               <input
-                type="number"
+                type="text"
                 inputMode="numeric"
-                min="0"
-                step="10000"
                 value={amount || ''}
-                onChange={(event) => setAmount(Number(event.target.value) || 0)}
+                placeholder="0"
+                onChange={(event) =>
+                  setAmount(Number(event.target.value.replace(/[^\d]/g, '')) || 0)
+                }
                 className="h-12 min-w-0 flex-1 bg-transparent text-base font-bold text-ink outline-none"
               />
               <span className="ml-1 text-sm font-bold text-ink/45">₫</span>
