@@ -17,7 +17,8 @@ function normalizeDebtValues(values: DebtItemFormValues): DebtItemFormValues {
     interestType: values.interestType,
     apr: optionalNumber(values.apr),
     monthlyInterestRate: optionalNumber(values.monthlyInterestRate),
-    minimumPayment: optionalMoney(values.minimumPayment),
+    minimumPaymentPercent: optionalPercent(values.minimumPaymentPercent),
+    minimumPayment: undefined,
     fixedMonthlyPayment: optionalMoney(values.fixedMonthlyPayment),
     dueDay: values.dueDay ? Math.min(31, Math.max(1, Math.round(values.dueDay))) : undefined,
     dueDate: values.dueDate || undefined,
@@ -112,7 +113,12 @@ export function useDebtTracker() {
 
         const { paidAmount, nextDebt } = applyPaymentToDebt(
           freshDebt,
-          amount ?? freshDebt.fixedMonthlyPayment ?? freshDebt.minimumPayment ?? freshDebt.currentBalance
+          amount ??
+            freshDebt.fixedMonthlyPayment ??
+            (freshDebt.minimumPaymentPercent
+              ? freshDebt.currentBalance * (freshDebt.minimumPaymentPercent / 100)
+              : freshDebt.minimumPayment) ??
+            freshDebt.currentBalance
         );
         if (paidAmount <= 0) {
           return;
@@ -180,4 +186,12 @@ function optionalMoney(value: number | undefined) {
   }
 
   return sanitizeMoney(value);
+}
+
+function optionalPercent(value: number | undefined) {
+  if (!Number.isFinite(value) || !value || value <= 0) {
+    return undefined;
+  }
+
+  return Math.min(100, Math.max(0, Number(value)));
 }

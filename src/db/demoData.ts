@@ -8,7 +8,7 @@ export const demoDebts: DebtItemFormValues[] = [
     currentBalance: 42000000,
     interestType: 'compound',
     apr: 28.5,
-    minimumPayment: 1800000,
+    minimumPaymentPercent: 4,
     dueDay: 8,
     notes: 'Ưu tiên trả vì lãi cao.',
     status: 'active'

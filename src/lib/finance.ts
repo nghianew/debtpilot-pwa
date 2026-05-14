@@ -36,7 +36,11 @@ export function getRequiredPayment(debt: DebtItem) {
     return 0;
   }
 
-  const configuredPayment = debt.fixedMonthlyPayment ?? debt.minimumPayment ?? 0;
+  const percentagePayment = debt.minimumPaymentPercent
+    ? debt.currentBalance * (debt.minimumPaymentPercent / 100)
+    : 0;
+  const configuredPayment =
+    debt.fixedMonthlyPayment ?? (percentagePayment > 0 ? percentagePayment : debt.minimumPayment ?? 0);
 
   if (configuredPayment > 0) {
     return sanitizeMoney(Math.min(debt.currentBalance, configuredPayment));

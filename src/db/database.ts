@@ -78,6 +78,8 @@ export class DebtPilotDatabase extends Dexie {
               card.baseCurrency === 'VND'
                 ? normalizeVnd(card.minimumPayment)
                 : migrateUsdToVnd(card.minimumPayment);
+            const minimumPaymentPercent =
+              balance > 0 ? Math.min(100, Math.max(0, (minimumPayment / balance) * 100)) : undefined;
 
             return {
               name: card.name,
@@ -86,7 +88,7 @@ export class DebtPilotDatabase extends Dexie {
               currentBalance: balance,
               interestType: 'compound',
               apr: card.apr,
-              minimumPayment,
+              minimumPaymentPercent,
               dueDay: card.dueDay,
               notes: 'Được chuyển từ dữ liệu thẻ tín dụng cũ.',
               status: balance <= 0 ? 'paid' : 'active',
@@ -95,6 +97,30 @@ export class DebtPilotDatabase extends Dexie {
             } satisfies DebtItem;
           })
         );
+      });
+
+    this.version(4)
+      .stores({
+        cards: '++id, name, dueDay, apr, balance, updatedAt, baseCurrency',
+        debts: '++id, name, type, status, dueDay, dueDate, updatedAt',
+        payments: '++id, debtId, paymentDate, createdAt'
+      })
+      .upgrade(async (transaction) => {
+        const debts = transaction.table<DebtItem, number>('debts');
+
+        await debts.toCollection().modify((debt) => {
+          if (debt.minimumPaymentPercent || !debt.minimumPayment || debt.currentBalance <= 0) {
+            debt.minimumPayment = undefined;
+            return;
+          }
+
+          debt.minimumPaymentPercent = Math.min(
+            100,
+            Math.max(0, (debt.minimumPayment / debt.currentBalance) * 100)
+          );
+          debt.minimumPayment = undefined;
+          debt.updatedAt = new Date().toISOString();
+        });
       });
   }
 }

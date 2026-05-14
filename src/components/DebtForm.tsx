@@ -44,7 +44,7 @@ export function DebtForm({ initialDebt, onSubmit, onCancel }: DebtFormProps) {
         interestType: initialDebt.interestType,
         apr: initialDebt.apr,
         monthlyInterestRate: initialDebt.monthlyInterestRate,
-        minimumPayment: initialDebt.minimumPayment,
+        minimumPaymentPercent: initialDebt.minimumPaymentPercent ?? legacyMinimumPaymentPercent(initialDebt),
         fixedMonthlyPayment: initialDebt.fixedMonthlyPayment,
         dueDay: initialDebt.dueDay,
         dueDate: initialDebt.dueDate,
@@ -192,10 +192,15 @@ export function DebtForm({ initialDebt, onSubmit, onCancel }: DebtFormProps) {
             setValues((current) => ({ ...current, monthlyInterestRate }))
           }
         />
-        <MoneyField
-          label="Thanh toán tối thiểu"
-          value={values.minimumPayment ?? 0}
-          onChange={(minimumPayment) => setValues((current) => ({ ...current, minimumPayment }))}
+        <NumberField
+          label="Thanh toán tối thiểu (%)"
+          value={values.minimumPaymentPercent ?? 0}
+          suffix="% dư nợ"
+          step="0.1"
+          max={100}
+          onChange={(minimumPaymentPercent) =>
+            setValues((current) => ({ ...current, minimumPaymentPercent }))
+          }
         />
         <MoneyField
           label="Trả cố định hằng tháng"
@@ -251,6 +256,14 @@ export function DebtForm({ initialDebt, onSubmit, onCancel }: DebtFormProps) {
       </div>
     </form>
   );
+}
+
+function legacyMinimumPaymentPercent(debt: DebtItem) {
+  if (!debt.minimumPayment || debt.currentBalance <= 0) {
+    return undefined;
+  }
+
+  return Math.min(100, Math.max(0, (debt.minimumPayment / debt.currentBalance) * 100));
 }
 
 interface NumberFieldProps {

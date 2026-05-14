@@ -65,6 +65,15 @@ export function DebtDetail({ debt, payments }: DebtDetailProps) {
           Còn lại: <span className="font-bold text-white">{formatCurrency(debt.currentBalance)}</span>
           {' · '}
           Lãi: <span className="font-bold text-white">{formatInterestType(debt.interestType)}</span>
+          {debt.minimumPaymentPercent ? (
+            <>
+              {' · '}
+              Tối thiểu:{' '}
+              <span className="font-bold text-white">
+                {formatPercent(debt.minimumPaymentPercent)} dư nợ
+              </span>
+            </>
+          ) : null}
         </p>
       </div>
 

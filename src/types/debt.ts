@@ -18,6 +18,7 @@ export interface DebtItem {
   interestType: InterestType;
   apr?: number;
   monthlyInterestRate?: number;
+  minimumPaymentPercent?: number;
   minimumPayment?: number;
   fixedMonthlyPayment?: number;
   dueDay?: number;
