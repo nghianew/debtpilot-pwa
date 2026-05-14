@@ -1,0 +1,7 @@
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DebtPilot touch icon">
+  <rect width="180" height="180" rx="38" fill="#0f766e"/>
+  <path d="M44 119c18-41 47-60 91-58-16 12-26 30-30 55-23-7-44-6-61 3Z" fill="#f3f8ef"/>
+  <path d="M66 104c15-23 32-34 53-32-11 8-18 20-22 38-11-5-21-7-31-6Z" fill="#b7dfc0"/>
+  <circle cx="131" cy="52" r="9" fill="#f8c866"/>
+  <path d="M51 129h78" stroke="#f8c866" stroke-width="11" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DebtPilot icon">
+  <rect width="512" height="512" rx="108" fill="#0f766e"/>
+  <path d="M126 338c52-116 135-171 260-166-44 33-71 85-82 156-67-20-126-16-178 10Z" fill="#f3f8ef"/>
+  <path d="M188 294c42-66 92-96 151-91-31 21-52 57-62 108-32-14-62-20-89-17Z" fill="#b7dfc0"/>
+  <circle cx="371" cy="149" r="25" fill="#f8c866"/>
+  <path d="M145 365h222" stroke="#f8c866" stroke-width="30" stroke-linecap="round"/>
+</svg>
