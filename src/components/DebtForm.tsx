@@ -62,11 +62,9 @@ export function DebtForm({ initialDebt, onSubmit, onCancel }: DebtFormProps) {
     setIsSaving(true);
 
     try {
-      const originalAmount = Math.max(values.originalAmount, values.currentBalance);
       await onSubmit({
         ...values,
-        originalAmount,
-        currentBalance: values.currentBalance || originalAmount,
+        currentBalance: values.currentBalance || values.originalAmount,
         status: values.currentBalance <= 0 ? 'paid' : values.status
       });
     } finally {

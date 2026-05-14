@@ -12,7 +12,7 @@ function normalizeDebtValues(values: DebtItemFormValues): DebtItemFormValues {
   return {
     name: values.name.trim() || 'Khoản nợ chưa đặt tên',
     type: values.type,
-    originalAmount: Math.max(originalAmount, currentBalance),
+    originalAmount,
     currentBalance,
     interestType: values.interestType,
     apr: optionalNumber(values.apr),
