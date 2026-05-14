@@ -2,8 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] ?? 'debtpilot-pwa';
-const base = process.env.GITHUB_PAGES === 'true' ? `/${repoName}/` : '/';
+const base = '/debtpilot-pwa/';
 
 export default defineConfig({
   base,
